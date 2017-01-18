@@ -72,9 +72,10 @@ public class GenericRestSqlSpecification<T> implements Specification<T> {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Object> castArguments(Root<T> root) {
 		List<Object> args = new ArrayList<Object>();
-		Class<? extends Object> type = root.get(property).getJavaType();
+		Class type = root.get(property).getJavaType();
 
 		for (String argument : arguments) {
 			if (type.equals(Integer.class)) {
@@ -96,6 +97,8 @@ public class GenericRestSqlSpecification<T> implements Specification<T> {
 
 				}
 				args.add(Boolean.valueOf(argument));
+			} else if (type.isEnum()) {
+				args.add(Enum.valueOf(type, argument));
 			} else {
 				args.add(argument);
 			}
